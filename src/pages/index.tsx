@@ -21,7 +21,7 @@ export default function Home() {
       extraArguments: debouncedAiArguments,
     },
     {
-      enabled: !!professor && !!geminiApiKey,
+      enabled: !!professor,
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       staleTime: Infinity,
@@ -45,7 +45,7 @@ export default function Home() {
         <div className="flex w-full flex-col gap-4">
           <div className="flex flex-col ">
             <input
-              placeholder="Insira a API key do Gemini"
+              placeholder="Insira a sua API key do Gemini (Opcional)"
               value={geminiApiKey}
               onChange={(e) => setGeminiApiKey(e.target.value)}
             />
@@ -57,14 +57,14 @@ export default function Home() {
               Gere sua chave aqui
             </a>
           </div>
-          <Autocomplete setProfessor={setProfessor} />
           <input
-            placeholder="Insira mais argumentos para a IA (opcional), exemplo: 'dizendo apenas a respeito da prova'"
+            placeholder="Insira mais argumentos para a IA (Opcional), exemplo: 'dizendo apenas a respeito da prova'"
             value={aiArguments}
             onChange={(e) => setAiArguments(e.target.value)}
           />
         </div>
       </div>
+      <Autocomplete setProfessor={setProfessor} />
       {professor && (
         <h1 className="my-8 text-xl">
           {professor?.name}
@@ -108,7 +108,7 @@ function Autocomplete({
   }, [professors.data]);
 
   return (
-    <div className="relative w-full">
+    <div className="relative mt-5 w-full">
       {isOpen && (
         <ul
           ref={ref}

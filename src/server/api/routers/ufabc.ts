@@ -5,6 +5,7 @@ import {
 } from "@google/generative-ai";
 import axios from "axios";
 import { z } from "zod";
+import { env } from "~/env";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { type UfabcProfessor, type Comment } from "~/types";
@@ -36,7 +37,7 @@ export const postRouter = createTRPCRouter({
     .input(
       z.object({
         teacherId: z.string(),
-        apiKey: z.string(),
+        apiKey: z.string().optional(),
         extraArguments: z.string().optional(),
       }),
     )
@@ -50,7 +51,7 @@ export const postRouter = createTRPCRouter({
         .map((item) => item.comment)
         .map((comment) => comment.replace(/\n/g, " "));
 
-      const model = createModel(apiKey);
+      const model = createModel(apiKey ? apiKey : env.GEMINI_API_KEY);
 
       const prompt = `Faça um resumo das seguintes reviews, ${extraArguments}: ${parsedData.join(" ")}`;
       const result = await model.generateContent(prompt);
