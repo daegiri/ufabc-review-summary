@@ -12,11 +12,13 @@ export default function Home() {
   const [professor, setProfessor] = useState<UfabcProfessor | null>(null);
   const [aiArguments, setAiArguments] = useState<string>("");
 
+  const debouncedAiArguments = useDebounce(aiArguments, 1000);
+
   const summaryQuery = api.post.getSummary.useQuery(
     {
       apiKey: geminiApiKey,
       teacherId: professor?._id ?? "",
-      extraArguments: aiArguments,
+      extraArguments: debouncedAiArguments,
     },
     {
       enabled: !!professor && !!geminiApiKey,
@@ -57,12 +59,17 @@ export default function Home() {
           </div>
           <Autocomplete setProfessor={setProfessor} />
           <input
-            placeholder="Insira mais argumentos para a IA (opcional)"
+            placeholder="Insira mais argumentos para a IA (opcional), exemplo: 'dizendo apenas a respeito da prova'"
             value={aiArguments}
             onChange={(e) => setAiArguments(e.target.value)}
           />
         </div>
       </div>
+      {!geminiApiKey && (
+        <p className="my-8 text-red-500">
+          Insira a chave da API do Gemini para continuar
+        </p>
+      )}
       {professor && (
         <h1 className="my-8 text-xl">
           {professor?.name}
