@@ -14,7 +14,7 @@ export default function Home() {
 
   const debouncedAiArguments = useDebounce(aiArguments, 1000);
 
-  const summaryQuery = api.post.getSummary.useQuery(
+  const summaryQuery = api.ufabc.getSummary.useQuery(
     {
       apiKey: geminiApiKey,
       teacherId: professor?._id ?? "",
@@ -94,7 +94,7 @@ function Autocomplete({
   const ref = useRef(null);
   useClickOutside(ref, () => setIsOpen(false));
 
-  const professors = api.post.listProfessors.useQuery(
+  const professors = api.ufabc.listProfessors.useQuery(
     { name: debouncedProfessorName },
     {
       enabled: debouncedProfessorName.length > 0,
