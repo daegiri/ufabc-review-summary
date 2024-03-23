@@ -112,11 +112,11 @@ function Autocomplete({
       {isOpen && (
         <ul
           ref={ref}
-          className="absolute mt-12 w-full rounded border border-gray-300 bg-white p-2 empty:hidden"
+          className="absolute mt-12 flex max-h-[300px] w-full flex-col gap-2 overflow-auto rounded border border-gray-300 bg-white p-2 empty:hidden"
         >
           {professors.data?.map((professor) => (
             <li
-              className="cursor-pointer"
+              className="cursor-pointer rounded p-2 hover:bg-gray-100"
               onClick={() => {
                 setProfessor(professor);
                 setProfessorName("");
