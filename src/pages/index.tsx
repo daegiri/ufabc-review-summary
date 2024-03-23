@@ -32,18 +32,29 @@ export default function Home() {
         <title>UFABC Review Summary</title>
       </Head>
       <div className="flex w-full gap-6">
-        <Image
-          src="/assets/ufabc_logo.png"
-          alt="UFABC Review Summary"
-          width={150}
-          height={150}
-        />
-        <div className="flex w-full flex-col gap-4">
-          <input
-            placeholder="Insira a API key do Gemini"
-            value={geminiApiKey}
-            onChange={(e) => setGeminiApiKey(e.target.value)}
+        <div>
+          <Image
+            src="/assets/ufabc_logo.png"
+            alt="UFABC Review Summary"
+            width={150}
+            height={150}
           />
+        </div>
+        <div className="flex w-full flex-col gap-4">
+          <div className="flex flex-col ">
+            <input
+              placeholder="Insira a API key do Gemini"
+              value={geminiApiKey}
+              onChange={(e) => setGeminiApiKey(e.target.value)}
+            />
+            <a
+              href="https://aistudio.google.com/app/apikey"
+              target="_blank"
+              className="w-fit text-blue-500 underline"
+            >
+              Gere sua chave aqui
+            </a>
+          </div>
           <Autocomplete setProfessor={setProfessor} />
           <input
             placeholder="Insira mais argumentos para a IA (opcional)"
