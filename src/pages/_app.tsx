@@ -11,9 +11,11 @@ const inter = Inter({
 });
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <main className={`font-sans ${inter.variable}`}>
-      <Component {...pageProps} />
-    </main>
+    <div className="flex justify-center overflow-x-hidden">
+      <main className={`w-full max-w-7xl p-4 font-sans ${inter.variable}`}>
+        <Component {...pageProps} />
+      </main>
+    </div>
   );
 };
 
