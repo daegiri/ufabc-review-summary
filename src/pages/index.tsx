@@ -1,6 +1,6 @@
 import Head from "next/head";
-import { useEffect, useRef, useState } from "react";
-import { UfabcProfessor } from "~/types";
+import { type RefObject, useEffect, useRef, useState } from "react";
+import { type UfabcProfessor } from "~/types";
 import ReactMarkdown from "react-markdown";
 import Image from "next/image";
 
@@ -15,7 +15,7 @@ export default function Home() {
   const summaryQuery = api.post.getSummary.useQuery(
     {
       apiKey: geminiApiKey,
-      teacherId: professor?._id || "",
+      teacherId: professor?._id ?? "",
       extraArguments: aiArguments,
     },
     {
@@ -151,9 +151,12 @@ function useDebounce<T>(value: T, delay: number) {
   return debouncedValue;
 }
 
-function useClickOutside(ref: any, callback: any) {
-  const handleClick = (e: any) => {
-    if (ref.current && !ref.current.contains(e.target)) {
+function useClickOutside<T extends HTMLElement>(
+  ref: RefObject<T>,
+  callback: () => void,
+): void {
+  const handleClick = (event: MouseEvent) => {
+    if (ref.current && !ref.current.contains(event.target as Node)) {
       callback();
     }
   };
@@ -164,21 +167,24 @@ function useClickOutside(ref: any, callback: any) {
     return () => {
       document.removeEventListener("mousedown", handleClick);
     };
-  });
+  }, [ref, callback]);
 }
 
-function useLocalStorage(key: string, initialValue: any) {
-  const [storedValue, setStoredValue] = useState<any>(() => {
+function useLocalStorage<T>(
+  key: string,
+  initialValue: T,
+): [T, (value: T | ((val: T) => T)) => void] {
+  const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
+      return item ? (JSON.parse(item) as T) : initialValue;
     } catch (error) {
       console.log(error);
       return initialValue;
     }
   });
 
-  const setValue = (value: any) => {
+  const setValue = (value: T | ((val: T) => T)) => {
     try {
       const valueToStore =
         value instanceof Function ? value(storedValue) : value;

@@ -7,7 +7,7 @@ import axios from "axios";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { UfabcProfessor, Comment } from "~/types";
+import { type UfabcProfessor, type Comment } from "~/types";
 
 const ufabcNextAPI = axios.create({
   baseURL: "https://api.ufabcnext.com/v1/",
@@ -16,18 +16,20 @@ const ufabcNextAPI = axios.create({
   },
 });
 
-const fetchData = async (url: string) => {
+const fetchData = async <T>(url: string) => {
   const response = await ufabcNextAPI.get(url);
-  return response.data;
+  return response.data as T;
 };
 
 export const postRouter = createTRPCRouter({
   listProfessors: publicProcedure
     .input(z.object({ name: z.string() }))
     .query(async ({ input: { name } }) => {
-      const professors = await fetchData(`teachers/search?q=${name}`);
+      const professors = await fetchData<{ data: UfabcProfessor[] }>(
+        `teachers/search?q=${name}`,
+      );
 
-      return professors.data as UfabcProfessor[];
+      return professors.data;
     }),
 
   getSummary: publicProcedure
@@ -39,10 +41,10 @@ export const postRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input: { teacherId, apiKey, extraArguments = "" } }) => {
-      const commentsData = await fetchData(
+      const commentsData = await fetchData<{ data: Comment[] }>(
         `comments/${teacherId}?page=0&limit=900`,
       );
-      const comments = commentsData.data as Comment[];
+      const comments = commentsData.data;
 
       const parsedData = comments
         .map((item) => item.comment)
@@ -50,7 +52,7 @@ export const postRouter = createTRPCRouter({
 
       const model = createModel(apiKey);
 
-      const prompt = `Faça um resumo das seguintes reviews, ${extraArguments}: ${parsedData}`;
+      const prompt = `Faça um resumo das seguintes reviews, ${extraArguments}: ${parsedData.join(" ")}`;
       const result = await model.generateContent(prompt);
       const response = result.response;
       const text = response.text();
