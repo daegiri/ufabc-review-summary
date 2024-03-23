@@ -47,7 +47,7 @@ export default function Home() {
             <input
               placeholder="Insira a sua API key do Gemini (Opcional)"
               value={geminiApiKey}
-              onChange={(e) => setGeminiApiKey(e.target.value)}
+              onInput={(e) => setGeminiApiKey(e.currentTarget.value)}
             />
             <a
               href="https://aistudio.google.com/app/apikey"
@@ -205,6 +205,10 @@ function useLocalStorage<T>(
       const valueToStore =
         value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
+      if (!valueToStore) {
+        window.localStorage.removeItem(key);
+        return;
+      }
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {
       console.log(error);
