@@ -65,11 +65,6 @@ export default function Home() {
           />
         </div>
       </div>
-      {!geminiApiKey && (
-        <p className="my-8 text-red-500">
-          Insira a chave da API do Gemini para continuar
-        </p>
-      )}
       {professor && (
         <h1 className="my-8 text-xl">
           {professor?.name}
